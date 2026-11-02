@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client";
 
 export default function EventDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedTicketTypeId, setSelectedTicketTypeId] = useState(null);
 
   useEffect(() => {
     async function loadEvent() {
@@ -66,16 +69,43 @@ export default function EventDetailPage() {
         <ul className="ticket-list">
           {event.ticket_types.map((ticketType) => (
             <li className="ticket-item" key={ticketType.id}>
-              <strong>{ticketType.name}</strong>
-              <p className="event-meta">
-                Price: £{ticketType.price}
-                <br />
-                Available: {ticketType.quantity_available}
-              </p>
+              <label className="ticket-option">
+                <input
+                  type="radio"
+                  name="ticket-type"
+                  value={ticketType.id}
+                  checked={selectedTicketTypeId === ticketType.id}
+                  onChange={() => setSelectedTicketTypeId(ticketType.id)}
+                />
+
+                <span>
+                  <strong>{ticketType.name}</strong>
+                  <br />
+                  Price: £{ticketType.price}
+                  <br />
+                  Available: {ticketType.quantity_available}
+                </span>
+              </label>
             </li>
           ))}
         </ul>
       )}
+      <div className="event-actions">
+        <button
+          className="button"
+          disabled={!selectedTicketTypeId}
+          onClick={() =>
+            navigate(`/events/${id}/book`, {
+              state: {
+                eventId: event.id,
+                ticketTypeId: selectedTicketTypeId,
+              },
+            })
+          }
+        >
+          Book tickets
+        </button>
+      </div>
     </main>
   );
 }
