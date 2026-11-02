@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiRequest } from "../api/client";
 
+import EventCard from "../components/EventCard";
+
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,19 +44,7 @@ export default function EventsPage() {
       ) : (
         <ul className="event-list">
           {events.map((event) => (
-            <li className="event-card" key={event.id}>
-              <Link to={`/events/${event.id}`}>
-                <h2>{event.title}</h2>
-              </Link>
-
-              <p className="event-meta">
-                {event.venue.name}, {event.venue.city}
-              </p>
-
-              <p className="event-meta">
-                Starts: {new Date(event.starts_at).toLocaleString()}
-              </p>
-            </li>
+            <EventCard key={event.id} event={event} />
           ))}
         </ul>
       )}
