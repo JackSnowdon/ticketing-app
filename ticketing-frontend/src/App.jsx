@@ -4,6 +4,9 @@ import EventsPage from "./pages/EventsPage";
 import EventDetailPage from "./pages/EventDetailPage";
 import BookingPage from "./pages/BookingPage";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import MyBookingsPage from "./pages/MyBookingsPage";
+import RequireAuth from "./components/RequireAuth";
 
 function App() {
   return (
@@ -13,8 +16,24 @@ function App() {
       <Routes>
         <Route path="/" element={<EventsPage />} />
         <Route path="/events/:id" element={<EventDetailPage />} />
-        <Route path="/events/:id/book" element={<BookingPage />} />
+        <Route
+          path="/my-bookings"
+          element={
+            <RequireAuth>
+              <MyBookingsPage />
+            </RequireAuth>
+            }
+          />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/my-bookings"
+          element={
+            <RequireAuth>
+              <MyBookingsPage />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

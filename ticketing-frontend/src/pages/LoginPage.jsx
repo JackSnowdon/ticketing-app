@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client";
-import { saveTokens } from "../api/auth";
+import { saveTokens, saveUsername } from "../api/auth";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ export default function LoginPage() {
       });
 
       saveTokens(data);
-
+      saveUsername(username);
       const redirectTo = location.state?.from || "/";
       navigate(redirectTo);
     } catch (err) {
