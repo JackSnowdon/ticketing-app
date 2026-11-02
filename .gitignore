@@ -85,6 +85,25 @@ Thumbs.db
 # but ignore local volumes/data if you add them later.
 docker-compose.override.yml
 
+# ------------------
+# Node / React Settings
+# ------------------
+# React / Node
+ticketing-frontend/node_modules/
+ticketing-frontend/dist/
+ticketing-frontend/build/
+ticketing-frontend/coverage/
+
+# React environment files
+ticketing-frontend/.env
+ticketing-frontend/.env.local
+ticketing-frontend/.env.*.local
+!ticketing-frontend/.env.example
+
+# Logs
+ticketing-frontend/npm-debug.log*
+ticketing-frontend/yarn-debug.log*
+ticketing-frontend/yarn-error.log*
 
 # -----------------
 # Interview Notes
