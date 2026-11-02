@@ -92,13 +92,23 @@ Then update the values for your local PostgreSQL database.
 python manage.py migrate
 ```
 
-### 6. Create a superuser
+### 6. Load demo data
+
+```bash
+python manage.py seed_demo_data
+```
+
+This creates public demo venues, upcoming events, and ticket types.
+
+The command is idempotent, so it can safely be run more than once.
+
+### 7. Create a superuser
 
 ```bash
 python manage.py createsuperuser
 ```
 
-### 7. Run the development server
+### 8. Run the development server
 
 ```bash
 python manage.py runserver
