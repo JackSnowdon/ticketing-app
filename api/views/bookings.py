@@ -46,9 +46,6 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
                 quantity=serializer.validated_data["quantity"],
             )
         except TicketingError as exc:
-            if str(exc) == "Ticket type not found.":
-                raise NotFound(str(exc))
-
             return Response(
                 {"detail": str(exc)},
                 status=status.HTTP_400_BAD_REQUEST,

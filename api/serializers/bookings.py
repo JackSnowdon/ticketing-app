@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from tickets.models import Booking, BookingItem
+from tickets.models import Booking, BookingItem, TicketType
 
 
 class BookingItemSerializer(serializers.ModelSerializer):
@@ -54,3 +54,36 @@ class BookingSerializer(serializers.ModelSerializer):
 class CreateBookingSerializer(serializers.Serializer):
     ticket_type_id = serializers.IntegerField()
     quantity = serializers.IntegerField(min_value=1)
+
+    def validate_ticket_type_id(self, value):
+        if not TicketType.objects.filter(id=value).exists():
+            raise serializers.ValidationError(
+                "Ticket type not found."
+            )
+
+        return value
+
+    def validate(self, data):
+        ticket_type_id = data.get("ticket_type_id")
+        quantity = data.get("quantity")
+
+        if ticket_type_id is None or quantity is None:
+            return data
+
+        try:
+            ticket_type = TicketType.objects.get(id=ticket_type_id)
+        except TicketType.DoesNotExist:
+            return data
+
+        if quantity > ticket_type.max_per_booking:
+            raise serializers.ValidationError(
+                {
+                    "quantity": (
+                        f"You can book a maximum of "
+                        f"{ticket_type.max_per_booking} "
+                        f"{ticket_type.name} tickets per booking."
+                    )
+                }
+            )
+
+        return data
