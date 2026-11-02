@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 
 from tickets.models import Event, TicketType, Venue
@@ -37,6 +38,24 @@ class EventSerializer(serializers.ModelSerializer):
             "is_published",
             "ticket_types",
         ]
+
+    def validate_title(self, value):
+        value = value.strip()
+
+        if not value:
+            raise serializers.ValidationError(
+                "Event title cannot be blank."
+            )
+
+        return value
+
+    def validate_starts_at(self, value):
+        if value <= timezone.now():
+            raise serializers.ValidationError(
+                "Event start time must be in the future."
+            )
+
+        return value
 
 
 class EventListSerializer(serializers.ModelSerializer):
