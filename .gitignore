@@ -1,0 +1,92 @@
+text
+# ------------------
+# Python
+# ------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ------------------
+# Virtual environments
+# ------------------
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ------------------
+# Django
+# ------------------
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# ------------------
+# Environment / secrets
+# ------------------
+.env
+.env.*
+!.env.example
+
+# ------------------
+# Testing / coverage
+# ------------------
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+.cache/
+
+# ------------------
+# IDEs
+# ------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ------------------
+# Operating system
+# ------------------
+.DS_Store
+Thumbs.db
+
+# ------------------
+# Docker
+# ------------------
+# Keep Dockerfiles and compose files tracked,
+# but ignore local volumes/data if you add them later.
+docker-compose.override.yml
+
+
+# -----------------
+# Interview Notes
+# -----------------
+interviewreadme.md
