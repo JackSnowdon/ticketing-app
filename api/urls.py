@@ -1,5 +1,10 @@
 from django.urls import path
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 from api.views.bookings import (
     BookingCancelAPIView,
     BookingDetailAPIView,
@@ -26,5 +31,15 @@ urlpatterns = [
         "bookings/<str:reference>/cancel/",
         BookingCancelAPIView.as_view(),
         name="booking-cancel",
+    ),
+    path(
+        "auth/token/",
+        TokenObtainPairView.as_view(),
+        name="token-obtain-pair",
+    ),
+    path(
+        "auth/token/refresh/",
+        TokenRefreshView.as_view(),
+        name="token-refresh",
     ),
 ]

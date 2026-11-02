@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { apiRequest } from "../api/client";
 
 export default function BookingPage() {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const bookingDetails = location.state;
 
@@ -42,7 +43,13 @@ export default function BookingPage() {
       setBooking(data);
     } catch (err) {
       if (err.status === 401) {
-        setError("You must be logged in to book tickets.");
+        navigate("/login", {
+          state: {
+            from: `/events/${id}/book`,
+            message: "Please log in to complete your booking.",
+        },
+      });
+      return;
       } else if (err.data?.detail) {
         setError(err.data.detail);
       } else {
