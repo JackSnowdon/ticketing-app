@@ -45,6 +45,8 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Event list and card styles */
+
 .event-list {
   list-style: none;
   padding: 0;
@@ -83,6 +85,8 @@ a:hover {
   font-size: 0.95rem;
 }
 
+/* Ticket list and card styles */
+
 .back-link {
   display: inline-block;
   margin-bottom: 24px;
@@ -107,6 +111,8 @@ a:hover {
   font-size: 1.05rem;
 }
 
+/* Loading and error message styles */
+
 .loading-message,
 .error-message {
   margin-top: 32px;
@@ -115,4 +121,45 @@ a:hover {
 
 .error-message {
   color: #b42318;
+}
+
+/* Header styles */
+
+.site-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e4e7eb;
+}
+
+.site-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #1f2933;
+}
+
+.site-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.nav-link {
+  color: #52606d;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  color: #2563eb;
 }
