@@ -190,3 +190,46 @@ a:hover {
 .event-actions {
   margin-top: 32px;
 }
+
+/* Form styles */
+
+.form {
+  margin-top: 24px;
+  display: grid;
+  gap: 16px;
+  max-width: 420px;
+}
+
+.form-field {
+  display: grid;
+  gap: 6px;
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd2d9;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #ffffff;
+}
+
+.form-input:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+  border-color: #2563eb;
+}
+
+.form-error {
+  color: #b42318;
+  font-weight: 500;
+}
+
+.form-success {
+  color: #067647;
+  font-weight: 500;
+}

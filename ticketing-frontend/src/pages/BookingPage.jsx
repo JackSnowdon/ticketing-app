@@ -1,10 +1,17 @@
+import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+import { apiRequest } from "../api/client";
 
 export default function BookingPage() {
   const { id } = useParams();
   const location = useLocation();
 
   const bookingDetails = location.state;
+
+  const [quantity, setQuantity] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [booking, setBooking] = useState(null);
 
   if (!bookingDetails) {
     return (
@@ -16,6 +23,34 @@ export default function BookingPage() {
         </Link>
       </main>
     );
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const data = await apiRequest("/api/bookings/", {
+        method: "POST",
+        body: JSON.stringify({
+          ticket_type_id: bookingDetails.ticketTypeId,
+          quantity: quantity,
+        }),
+      });
+
+      setBooking(data);
+    } catch (err) {
+      if (err.status === 401) {
+        setError("You must be logged in to book tickets.");
+      } else if (err.data?.detail) {
+        setError(err.data.detail);
+      } else {
+        setError("Unable to create booking.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -31,7 +66,38 @@ export default function BookingPage() {
         For event ID: <strong>{bookingDetails.eventId}</strong>
       </p>
 
-      <p>This page will soon collect attendee details and create a booking.</p>
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-field">
+          <label className="form-label" htmlFor="quantity">
+            Number of tickets
+          </label>
+
+          <input
+            className="form-input"
+            id="quantity"
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(event) => setQuantity(Number(event.target.value))}
+          />
+        </div>
+
+        {error && <p className="form-error">{error}</p>}
+
+        {booking && (
+          <p className="form-success">
+            Booking created. Reference: {booking.reference}
+          </p>
+        )}
+
+        <button
+          className="button"
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Creating booking…" : "Confirm booking"}
+        </button>
+      </form>
 
       <Link className="back-link" to={`/events/${id}`}>
         Back to event
