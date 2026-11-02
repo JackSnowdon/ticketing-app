@@ -1,16 +1,38 @@
+from datetime import date
+
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
+from accounts.models import Address
 from tickets.models import Event, TicketType, Venue
 
 User = get_user_model()
 
 
-def create_user(username="testuser", password="testpass123"):
-    return User.objects.create_user(
+def create_user(
+    username="testuser",
+    password="testpass123",
+    email=None,
+    date_of_birth=None,
+    address_data=None,
+):
+    if email is None:
+        email = f"{username}@example.com"
+
+    if date_of_birth is None:
+        date_of_birth = date(1995, 1, 1)
+
+    user = User.objects.create_user(
         username=username,
+        email=email,
         password=password,
+        date_of_birth=date_of_birth,
     )
+
+    if address_data is not None:
+        Address.objects.create(user=user, **address_data)
+
+    return user
 
 
 def create_event_with_tickets(
