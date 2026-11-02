@@ -15,7 +15,7 @@ Public event endpoints do not require authentication. Booking endpoints require 
 ### Obtain tokens
 
 ```http
-POST /api/auth/token/
+POST /api/token/
 ```
 
 Request:
@@ -49,7 +49,7 @@ Authorization: Bearer <access-token>
 ### Refresh token
 
 ```http
-POST /api/auth/token/refresh/
+POST /api/token/refresh/
 ```
 
 Request:
@@ -406,7 +406,7 @@ Authorization: Bearer <access-token>
 When the access token expires, call:
 
 ```http
-POST /api/auth/token/refresh/
+POST /api/token/refresh/
 ```
 
 For field-level validation errors, React can display messages beside the relevant input:
