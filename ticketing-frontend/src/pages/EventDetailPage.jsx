@@ -24,24 +24,29 @@ export default function EventDetailPage() {
   }, [id]);
 
   if (isLoading) {
-    return <p>Loading event…</p>;
+    return <p className="loading-message">Loading event…</p>;
   }
 
   if (error) {
     return (
       <main>
-        <p>{error}</p>
-        <Link to="/">Back to events</Link>
+        <p className="error-message">{error}</p>
+        <Link className="back-link" to="/">
+          Back to events
+        </Link>
       </main>
     );
   }
 
   return (
     <main>
-      <Link to="/">Back to events</Link>
+      <Link className="back-link" to="/">
+        Back to events
+      </Link>
 
       <h1>{event.title}</h1>
-      <p>
+
+      <p className="event-meta">
         {event.venue.name}, {event.venue.city}
       </p>
 
@@ -58,14 +63,15 @@ export default function EventDetailPage() {
       {event.ticket_types.length === 0 ? (
         <p>No ticket types are available for this event.</p>
       ) : (
-        <ul>
+        <ul className="ticket-list">
           {event.ticket_types.map((ticketType) => (
-            <li key={ticketType.id}>
+            <li className="ticket-item" key={ticketType.id}>
               <strong>{ticketType.name}</strong>
-              <br />
-              Price: £{ticketType.price}
-              <br />
-              Available: {ticketType.quantity_available}
+              <p className="event-meta">
+                Price: £{ticketType.price}
+                <br />
+                Available: {ticketType.quantity_available}
+              </p>
             </li>
           ))}
         </ul>

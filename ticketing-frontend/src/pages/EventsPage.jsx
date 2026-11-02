@@ -23,30 +23,35 @@ export default function EventsPage() {
   }, []);
 
   if (isLoading) {
-    return <p>Loading events…</p>;
+    return <p className="loading-message">Loading events…</p>;
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <p className="error-message">{error}</p>;
   }
 
   return (
     <main>
       <h1>Upcoming events</h1>
+      <p className="event-meta">
+        Browse events and choose one to see available tickets.
+      </p>
 
       {events.length === 0 ? (
         <p>No upcoming events are available.</p>
       ) : (
-        <ul>
+        <ul className="event-list">
           {events.map((event) => (
-            <li key={event.id}>
+            <li className="event-card" key={event.id}>
               <Link to={`/events/${event.id}`}>
                 <h2>{event.title}</h2>
               </Link>
-              <p>
+
+              <p className="event-meta">
                 {event.venue.name}, {event.venue.city}
               </p>
-              <p>
+
+              <p className="event-meta">
                 Starts: {new Date(event.starts_at).toLocaleString()}
               </p>
             </li>
