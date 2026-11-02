@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { apiRequest } from "../api/client";
 
 export default function EventsPage() {
@@ -39,7 +40,9 @@ export default function EventsPage() {
         <ul>
           {events.map((event) => (
             <li key={event.id}>
-              <h2>{event.title}</h2>
+              <Link to={`/events/${event.id}`}>
+                <h2>{event.title}</h2>
+              </Link>
               <p>
                 {event.venue.name}, {event.venue.city}
               </p>
