@@ -1,14 +1,17 @@
 from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.filters import OrderingFilter, SearchFilter
 
+from api.filters.events import EventFilter
 from api.serializers.events import EventListSerializer, EventSerializer
 from tickets.models import Event
 
 
 class EventListAPIView(generics.ListAPIView):
     serializer_class = EventListSerializer
-    filter_backends = [SearchFilter, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = EventFilter
     search_fields = ["title", "description", "venue__name", "venue__city"]
     ordering_fields = ["starts_at", "title"]
     ordering = ["starts_at"]

@@ -5,8 +5,9 @@ from .models import Booking, BookingItem, Event, TicketType, Venue
 
 @admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
-    list_display = ("name", "city")
-    search_fields = ("name", "city")
+    list_display = ["name", "slug", "city"]
+    search_fields = ["name", "city"]
+    prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(Event)
