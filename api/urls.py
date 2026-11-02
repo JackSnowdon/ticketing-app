@@ -6,15 +6,16 @@ from api.views.bookings import (
     BookingListCreateAPIView,
 )
 from api.views.events import EventDetailAPIView, EventListAPIView
+from api.views.health import health_check
 
 urlpatterns = [
+    path("health/", health_check, name="health-check"),
     path("events/", EventListAPIView.as_view(), name="event-list"),
     path(
         "events/<int:pk>/",
         EventDetailAPIView.as_view(),
         name="event-detail",
     ),
-
     path("bookings/", BookingListCreateAPIView.as_view(), name="booking-list"),
     path(
         "bookings/<str:reference>/",
