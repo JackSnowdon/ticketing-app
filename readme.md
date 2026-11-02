@@ -31,6 +31,10 @@ The project is designed to support a React frontend and uses JWT authentication 
 ## Project structure
 
 ```text
+accounts/
+    tests/
+    urls.py
+
 api/
     serializers/
     views/
