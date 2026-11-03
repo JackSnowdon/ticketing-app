@@ -402,3 +402,35 @@ a:hover {
   padding-top: 16px;
   border-top: 1px solid #e5e5e5;
 }
+
+/* Cancel confirmation page styles */
+
+.cancel-confirmation {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background-color: #fef2f2;
+}
+
+.cancel-confirmation p {
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: #991b1b;
+}
+
+.cancel-confirmation .event-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 0;
+}
+
+.cancel-confirmation .button {
+  height: 44px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}

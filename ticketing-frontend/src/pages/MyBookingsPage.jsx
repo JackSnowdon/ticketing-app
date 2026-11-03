@@ -11,6 +11,7 @@ export default function MyBookingsPage() {
   const [error, setError] = useState(null);
   const [cancellingReference, setCancellingReference] = useState(null);
   const [cancelError, setCancelError] = useState(null);
+  const [confirmingReference, setConfirmingReference] = useState(null);
 
   useEffect(() => {
     async function loadBookings() {
@@ -132,15 +133,38 @@ export default function MyBookingsPage() {
                 Total: £{booking.total}
               </p>
                 {booking.status !== "cancelled" && (
-                  <button
-                    className="button button-danger"
-                    onClick={() => handleCancelBooking(booking.reference)}
-                    disabled={cancellingReference === booking.reference}
-                  >
-                    {cancellingReference === booking.reference
-                      ? "Cancelling…"
-                      : "Cancel booking"}
-                  </button>
+                  confirmingReference === booking.reference ? (
+                    <div className="cancel-confirmation">
+                      <p>Are you sure you want to cancel this booking?</p>
+
+                      <div className="event-actions">
+                        <button
+                          className="button button-danger"
+                          onClick={() => handleCancelBooking(booking.reference)}
+                          disabled={cancellingReference === booking.reference}
+                        >
+                          {cancellingReference === booking.reference
+                            ? "Cancelling…"
+                            : "Yes, cancel booking"}
+                        </button>
+
+                        <button
+                          className="button button-secondary"
+                          onClick={() => setConfirmingReference(null)}
+                          disabled={cancellingReference === booking.reference}
+                        >
+                          Keep booking
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      className="button button-danger"
+                      onClick={() => setConfirmingReference(booking.reference)}
+                    >
+                      Cancel booking
+                    </button>
+                  )
                 )}
             </li>
           ))}
