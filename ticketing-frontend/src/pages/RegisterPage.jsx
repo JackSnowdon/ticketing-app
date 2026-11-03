@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client";
+import { getErrorMessage } from "../api/errors";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -53,17 +54,12 @@ export default function RegisterPage() {
         },
       });
     } catch (err) {
-      if (err.data) {
-        const firstError = Object.values(err.data)[0];
-
-        if (Array.isArray(firstError)) {
-          setError(firstError[0]);
-        } else {
-          setError(firstError);
-        }
-      } else {
-        setError("Unable to create account. Please try again.");
-      }
+      setError(
+        getErrorMessage(
+          err,
+          "Unable to create account. Please try again."
+        )
+      );
     } finally {
       setIsSubmitting(false);
     }

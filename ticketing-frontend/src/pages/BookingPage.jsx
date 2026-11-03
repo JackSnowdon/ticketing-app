@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { apiRequest } from "../api/client";
+import { getErrorMessage } from "../api/errors";
 
 export default function BookingPage() {
   const { id } = useParams();
@@ -49,10 +50,13 @@ export default function BookingPage() {
           },
         });
         return;
-      } else if (err.data?.detail) {
-        setError(err.data.detail);
       } else {
-        setError("Unable to create booking.");
+        setError(
+          getErrorMessage(
+            err,
+            "Unable to create booking. Please try again."
+          )
+        );
       }
     } finally {
       setIsSubmitting(false);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client";
 import { saveTokens, saveUsername } from "../api/auth";
+import { getErrorMessage } from "../api/errors";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -34,7 +35,12 @@ export default function LoginPage() {
       if (err.status === 401) {
         setError("Invalid username or password.");
       } else {
-        setError("Unable to log in. Please try again.");
+        setError(
+          getErrorMessage(
+            err,
+            "Unable to log in. Please try again."
+          )
+        );
       }
     } finally {
       setIsSubmitting(false);
