@@ -10,6 +10,12 @@ export default function BookingPage() {
 
   const bookingDetails = location.state;
 
+  const ticketType = bookingDetails?.ticketType;
+  const maxQuantity = Math.min(
+    ticketType?.quantity_available ?? 1,
+    ticketType?.max_per_booking ?? 1
+  );
+
   const [quantity, setQuantity] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -94,9 +100,19 @@ export default function BookingPage() {
             id="quantity"
             type="number"
             min="1"
+            max={maxQuantity}
             value={quantity}
-            onChange={(event) => setQuantity(Number(event.target.value))}
+            onChange={(event) => {
+              const nextQuantity = Number(event.target.value);
+              setQuantity(
+                Math.min(Math.max(nextQuantity, 1), maxQuantity)
+              );
+            }}
           />
+
+          <p className="event-meta">
+            Maximum {maxQuantity} ticket{maxQuantity === 1 ? "" : "s"} per booking.
+          </p>  
         </div>
 
         {error && <p className="form-error">{error}</p>}

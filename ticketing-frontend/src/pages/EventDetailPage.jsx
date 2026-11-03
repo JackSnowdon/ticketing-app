@@ -67,27 +67,33 @@ export default function EventDetailPage() {
         <p>No ticket types are available for this event.</p>
       ) : (
         <ul className="ticket-list">
-          {event.ticket_types.map((ticketType) => (
-            <li className="ticket-item" key={ticketType.id}>
-              <label className="ticket-option">
-                <input
-                  type="radio"
-                  name="ticket-type"
-                  value={ticketType.id}
-                  checked={selectedTicketTypeId === ticketType.id}
-                  onChange={() => setSelectedTicketTypeId(ticketType.id)}
-                />
+          {event.ticket_types.map((ticketType) => {
+            const isSoldOut = ticketType.quantity_available === 0;
 
-                <span>
-                  <strong>{ticketType.name}</strong>
-                  <br />
-                  Price: £{ticketType.price}
-                  <br />
-                  Available: {ticketType.quantity_available}
-                </span>
-              </label>
-            </li>
-          ))}
+            return (
+              <li className="ticket-item" key={ticketType.id}>
+                <label className="ticket-option">
+                  <input
+                    type="radio"
+                    name="ticket-type"
+                    value={ticketType.id}
+                    checked={selectedTicketTypeId === ticketType.id}
+                    disabled={isSoldOut}
+                    onChange={() => setSelectedTicketTypeId(ticketType.id)}
+                  />
+
+
+                  <span>
+                    <strong>{ticketType.name}</strong>
+                    <br />
+                    Price: £{ticketType.price}
+                    <br />
+                    {isSoldOut ? "Sold out" : `Available: ${ticketType.quantity_available}`}
+                  </span>
+                </label>
+              </li>
+            );
+          })}
         </ul>
       )}
       <div className="event-actions">
@@ -98,6 +104,10 @@ export default function EventDetailPage() {
             const selectedTicketType = event.ticket_types.find(
               (ticketType) => ticketType.id === selectedTicketTypeId
             );
+
+            if (!selectedTicketType || selectedTicketType.quantity_available === 0) {
+              return;
+            }
 
             navigate(`/events/${id}/book`, {
               state: {
