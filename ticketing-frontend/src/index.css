@@ -309,3 +309,21 @@ a:hover {
   color: #991b1b;
 }
 
+/* confirmation banner */
+
+.confirmation-banner {
+  background-color: #ecfdf3;
+  border: 1px solid #abefc6;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 24px;
+}
+
+.confirmation-banner h2 {
+  margin-top: 0;
+  color: #067647;
+}
+
+.confirmation-banner p {
+  margin: 4px 0;
+}

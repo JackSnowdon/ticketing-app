@@ -12,7 +12,6 @@ export default function BookingPage() {
   const [quantity, setQuantity] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [booking, setBooking] = useState(null);
 
   if (!bookingDetails) {
     return (
@@ -40,16 +39,20 @@ export default function BookingPage() {
         }),
       });
 
-      setBooking(data);
+      navigate("/my-bookings", {
+        state: {
+          confirmation: data,
+        },
+      });
     } catch (err) {
       if (err.status === 401) {
         navigate("/login", {
           state: {
             from: `/events/${id}/book`,
             message: "Please log in to complete your booking.",
-        },
-      });
-      return;
+          },
+        });
+        return;
       } else if (err.data?.detail) {
         setError(err.data.detail);
       } else {
@@ -91,17 +94,7 @@ export default function BookingPage() {
 
         {error && <p className="form-error">{error}</p>}
 
-        {booking && (
-          <p className="form-success">
-            Booking created. Reference: {booking.reference}
-          </p>
-        )}
-
-        <button
-          className="button"
-          type="submit"
-          disabled={isSubmitting}
-        >
+        <button className="button" type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Creating booking…" : "Confirm booking"}
         </button>
       </form>

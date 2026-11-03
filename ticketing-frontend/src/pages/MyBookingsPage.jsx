@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { apiRequest } from "../api/client";
 
 export default function MyBookingsPage() {
+  const location = useLocation();
+  const confirmation = location.state?.confirmation;
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,7 +34,19 @@ export default function MyBookingsPage() {
 
   return (
     <main>
-      <h1>My bookings</h1>
+       <h1>My bookings</h1>
+
+      {confirmation && (
+        <div className="confirmation-banner">
+          <h2>Booking confirmed</h2>
+          <p>
+            Your booking reference is <strong>{confirmation.reference}</strong>.
+          </p>
+          <p>
+            Total: £{confirmation.total}
+          </p>
+        </div>
+      )}
 
       {bookings.length === 0 ? (
         <p>

@@ -15,17 +15,21 @@ function App() {
 
       <Routes>
         <Route path="/" element={<EventsPage />} />
+
         <Route path="/events/:id" element={<EventDetailPage />} />
+
         <Route
-          path="/my-bookings"
+          path="/events/:id/book"
           element={
             <RequireAuth>
-              <MyBookingsPage />
+              <BookingPage />
             </RequireAuth>
-            }
-          />
+          }
+        />
+
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
         <Route
           path="/my-bookings"
           element={
