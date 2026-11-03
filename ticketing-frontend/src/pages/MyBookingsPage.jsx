@@ -84,10 +84,14 @@ export default function MyBookingsPage() {
       )}
 
       {bookings.length === 0 ? (
-        <p>
-          You have no bookings yet.{" "}
-          <Link to="/">Browse events</Link>
-        </p>
+        <div className="empty-state">
+          <h2>No bookings yet</h2>
+          <p>When you book tickets, they will appear here.</p>
+
+          <Link className="button button-primary" to="/">
+            Browse events
+          </Link>
+        </div>
       ) : (
         <ul className="booking-list">
           {bookings.map((booking) => (
@@ -100,18 +104,28 @@ export default function MyBookingsPage() {
               </div>
 
               <ul className="ticket-list">
-                {booking.items.map((item) => (
-                  <li className="ticket-item" key={item.id}>
-                    <strong>{item.event_title}</strong>
-                    <p className="event-meta">
-                      {item.ticket_type_name}
-                      <br />
-                      Quantity: {item.quantity}
-                      <br />
-                      Line total: £{item.line_total}
-                    </p>
-                  </li>
-                ))}
+                {booking.items.map((item) => {
+                  console.log("booking item:", item);
+
+                  return (
+                    <li className="ticket-item" key={item.id}>
+                      <Link
+                        className="booking-event-link"
+                        to={`/events/${item.event_id}`}
+                      >
+                        {item.event_title}
+                      </Link>
+
+                      <p className="event-meta">
+                        {item.ticket_type_name}
+                        <br />
+                        Quantity: {item.quantity}
+                        <br />
+                        Total Booking Cost: £{item.line_total}
+                      </p>
+                    </li>
+                  );
+                })}
               </ul>
 
               <p className="booking-total">

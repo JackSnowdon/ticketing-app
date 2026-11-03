@@ -44,7 +44,7 @@ export default function BookingConfirmationPage() {
       <div className="confirmation-banner">
         <h1>Booking confirmed</h1>
         <p>
-          Your booking reference is <strong>{booking.reference}</strong>.
+          Your booking reference is <strong>{booking.reference}, please keep it for your records.</strong>
         </p>
       </div>
 
@@ -75,9 +75,29 @@ export default function BookingConfirmationPage() {
         Total: £{booking.total}
       </p>
 
-      <Link className="back-link" to="/my-bookings">
-        View all bookings
-      </Link>
+      <div className="confirmation-next-steps">
+        <h2>What happens next?</h2>
+
+        <p>
+          Keep your booking reference safe. You may need it if you contact us about
+          this booking.
+        </p>
+
+        <p>
+          You can view this booking again using its reference, or return to the
+          events list to book more tickets.
+        </p>
+      </div>
+
+      <div className="event-actions">
+        <Link className="button button-secondary" to="/">
+          Browse events
+        </Link>
+
+        <Link className="button button-primary" to="/my-bookings">
+          View my bookings
+        </Link>
+      </div>
     </main>
   );
 }

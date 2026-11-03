@@ -16,12 +16,17 @@ class BookingItemSerializer(serializers.ModelSerializer):
         max_digits=10,
         decimal_places=2,
         read_only=True,
+    )   
+    event_id = serializers.IntegerField(
+        source="ticket_type.event.id",
+        read_only=True
     )
 
     class Meta:
         model = BookingItem
         fields = [
             "id",
+            "event_id",
             "ticket_type",
             "ticket_type_name",
             "event_title",

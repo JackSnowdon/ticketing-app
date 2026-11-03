@@ -234,8 +234,32 @@ a:hover {
   cursor: not-allowed;
 }
 
+.button-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+}
+
+.button-primary:hover {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.button-secondary {
+  background-color: #ffffff;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+.button-secondary:hover {
+  background-color: #eff6ff;
+}
+
 .event-actions {
-  margin-top: 32px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
 }
 
 /* Form styles */
@@ -355,4 +379,26 @@ a:hover {
 .confirmation-banner p {
   margin: 4px 0;
   font-size: 1.05rem;
+}
+
+/* Confirmation page actions */
+
+.confirmation-reference {
+  margin: 24px 0;
+  padding: 16px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.confirmation-reference-value {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.confirmation-next-steps {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e5e5;
 }
