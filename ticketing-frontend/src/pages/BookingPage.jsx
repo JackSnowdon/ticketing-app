@@ -39,11 +39,7 @@ export default function BookingPage() {
         }),
       });
 
-      navigate("/my-bookings", {
-        state: {
-          confirmation: data,
-        },
-      });
+      navigate(`/bookings/${data.reference}/confirmation`);
     } catch (err) {
       if (err.status === 401) {
         navigate("/login", {
@@ -67,14 +63,21 @@ export default function BookingPage() {
     <main>
       <h1>Booking</h1>
 
-      <p>
-        You selected ticket type ID:{" "}
-        <strong>{bookingDetails.ticketTypeId}</strong>
-      </p>
-
-      <p>
-        For event ID: <strong>{bookingDetails.eventId}</strong>
-      </p>
+      {bookingDetails.ticketType ? (
+        <div className="selected-ticket">
+          <h2>{bookingDetails.ticketType.name}</h2>
+          <p className="event-meta">
+            Price: £{bookingDetails.ticketType.price}
+            <br />
+            Available: {bookingDetails.ticketType.quantity_available}
+          </p>
+        </div>
+      ) : (
+        <p>
+          You selected ticket type ID:{" "}
+          <strong>{bookingDetails.ticketTypeId}</strong>
+        </p>
+      )}
 
       <form className="form" onSubmit={handleSubmit}>
         <div className="form-field">

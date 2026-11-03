@@ -94,14 +94,19 @@ export default function EventDetailPage() {
         <button
           className="button"
           disabled={!selectedTicketTypeId}
-          onClick={() =>
+          onClick={() => {
+            const selectedTicketType = event.ticket_types.find(
+              (ticketType) => ticketType.id === selectedTicketTypeId
+            );
+
             navigate(`/events/${id}/book`, {
               state: {
                 eventId: event.id,
                 ticketTypeId: selectedTicketTypeId,
+                ticketType: selectedTicketType,
               },
-            })
-          }
+            });
+          }}
         >
           Book tickets
         </button>
