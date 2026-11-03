@@ -1,21 +1,44 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { isLoggedIn, logout, getUsername } from "../api/auth";
+import { 
+  isLoggedIn, 
+  logout, 
+  getUsername, 
+  fetchCurrentUser
+} from "../api/auth";
 
 export default function Header() {
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState(isLoggedIn());
   const [username, setUsername] = useState(getUsername());
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     setLoggedIn(isLoggedIn());
     setUsername(getUsername());
+
+    async function loadCurrentUser() {
+      if (!isLoggedIn()) {
+        setCurrentUser(null);
+        return;
+      }
+
+      try {
+        const user = await fetchCurrentUser();
+        setCurrentUser(user);
+      } catch (err) {
+        setCurrentUser(null);
+      }
+    }
+
+    loadCurrentUser();
   }, [location]);
 
   function handleLogout() {
     logout();
     setLoggedIn(false);
     setUsername(null);
+    setCurrentUser(null);
   }
 
   return (
@@ -46,9 +69,9 @@ export default function Header() {
             </NavLink>
           )}
 
-          {loggedIn && username && (
+          {loggedIn && (currentUser?.username || username) && (
             <span className="logged-in-as">
-              Logged in as {username}
+              Logged in as {currentUser?.username || username}
             </span>
           )}
 

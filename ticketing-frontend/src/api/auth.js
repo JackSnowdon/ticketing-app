@@ -1,3 +1,5 @@
+import { apiRequest } from "./client";
+
 const ACCESS_TOKEN_KEY = "ticketfast_access_token";
 const REFRESH_TOKEN_KEY = "ticketfast_refresh_token";
 const USERNAME_KEY = "ticketfast_username";
@@ -35,4 +37,8 @@ export function isLoggedIn() {
 
 export function logout() {
   clearTokens();
+}
+
+export async function fetchCurrentUser() {
+  return apiRequest("/api/auth/me/");
 }

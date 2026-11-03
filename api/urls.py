@@ -12,6 +12,7 @@ from api.views.bookings import (
 )
 from api.views.events import EventDetailAPIView, EventListAPIView
 from api.views.health import health_check
+from api.views.accounts import RegisterAPIView, MeAPIView
 
 urlpatterns = [
     path("health/", health_check, name="health-check"),
@@ -41,5 +42,15 @@ urlpatterns = [
         "auth/token/refresh/",
         TokenRefreshView.as_view(),
         name="token-refresh",
+    ),
+    path(
+        "auth/register/",
+        RegisterAPIView.as_view(),
+        name="register",
+    ),
+    path(
+        "auth/me/",
+        MeAPIView.as_view(),
+        name="me",
     ),
 ]

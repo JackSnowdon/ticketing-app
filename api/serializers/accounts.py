@@ -54,3 +54,15 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             date_of_birth=validated_data.get('date_of_birth'),
         )
+    
+
+class MeSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = [
+                "id",
+                "username",
+                "email",
+                "date_of_birth",
+            ]
+            read_only_fields = fields
