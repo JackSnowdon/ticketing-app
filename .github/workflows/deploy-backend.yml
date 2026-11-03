@@ -1,0 +1,58 @@
+name: Deploy Django backend to Heroku
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "accounts/**"
+      - "api/**"
+      - "tickets/**"
+      - "config/**"
+      - "manage.py"
+      - "requirements.txt"
+      - "Procfile"
+      - ".github/workflows/deploy-backend.yml"
+
+  workflow_dispatch:
+
+concurrency:
+  group: heroku-backend-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Django checks
+        env:
+          DJANGO_SECRET_KEY: github-actions-temporary-key
+          DEBUG: False
+          DATABASE_URL: sqlite:///github-actions.sqlite3
+        run: python manage.py check
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git remote add heroku https://x:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git
+          git push heroku HEAD:refs/heads/main
