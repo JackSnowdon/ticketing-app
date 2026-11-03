@@ -14,7 +14,7 @@ export default function EventDetailPage() {
   useEffect(() => {
     async function loadEvent() {
       try {
-        const data = await apiRequest(`/tickets/events/${id}/`);
+        const data = await apiRequest(`/api/events/${id}/`);
         setEvent(data);
       } catch (err) {
         setError("Unable to load this event.");

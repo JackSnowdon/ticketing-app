@@ -12,7 +12,7 @@ export default function EventsPage() {
   useEffect(() => {
     async function loadEvents() {
       try {
-        const data = await apiRequest("/tickets/events/");
+        const data = await apiRequest("/api/events/");
         setEvents(data.results);
       } catch (err) {
         setError("Unable to load events.");
