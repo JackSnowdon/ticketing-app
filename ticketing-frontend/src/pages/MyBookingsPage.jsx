@@ -5,9 +5,12 @@ import { apiRequest } from "../api/client";
 export default function MyBookingsPage() {
   const location = useLocation();
   const confirmation = location.state?.confirmation;
+
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [cancellingReference, setCancellingReference] = useState(null);
+  const [cancelError, setCancelError] = useState(null);
 
   useEffect(() => {
     async function loadBookings() {
@@ -24,6 +27,34 @@ export default function MyBookingsPage() {
     loadBookings();
   }, []);
 
+  async function handleCancelBooking(reference) {
+    setCancellingReference(reference);
+    setCancelError(null);
+
+    try {
+      const updatedBooking = await apiRequest(
+        `/api/bookings/${reference}/cancel/`,
+        {
+          method: "POST",
+        }
+      );
+
+      setBookings((previousBookings) =>
+        previousBookings.map((booking) =>
+          booking.reference === reference ? updatedBooking : booking
+        )
+      );
+    } catch (err) {
+      if (err.data?.detail) {
+        setCancelError(err.data.detail);
+      } else {
+        setCancelError("Unable to cancel this booking.");
+      }
+    } finally {
+      setCancellingReference(null);
+    }
+  }
+
   if (isLoading) {
     return <p className="loading-message">Loading your bookings…</p>;
   }
@@ -34,7 +65,11 @@ export default function MyBookingsPage() {
 
   return (
     <main>
-       <h1>My bookings</h1>
+      <h1>My bookings</h1>
+
+      {cancelError && (
+        <p className="form-error">{cancelError}</p>
+      )}
 
       {confirmation && (
         <div className="confirmation-banner">
@@ -82,6 +117,17 @@ export default function MyBookingsPage() {
               <p className="booking-total">
                 Total: £{booking.total}
               </p>
+                {booking.status !== "cancelled" && (
+                  <button
+                    className="button button-danger"
+                    onClick={() => handleCancelBooking(booking.reference)}
+                    disabled={cancellingReference === booking.reference}
+                  >
+                    {cancellingReference === booking.reference
+                      ? "Cancelling…"
+                      : "Cancel booking"}
+                  </button>
+                )}
             </li>
           ))}
         </ul>

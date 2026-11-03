@@ -206,6 +206,20 @@ a:hover {
   cursor: not-allowed;
 }
 
+.button-danger {
+  background-color: #b42318;
+  margin-top: 16px;
+}
+
+.button-danger:hover {
+  background-color: #912018;
+}
+
+.button-danger:disabled {
+  background-color: #d9a1a0;
+  cursor: not-allowed;
+}
+
 .event-actions {
   margin-top: 32px;
 }
