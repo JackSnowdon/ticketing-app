@@ -1,163 +1,92 @@
-# Ticketing API
+# TicketFast
 
-A Django REST Framework API for browsing published events, viewing ticket types, and creating and managing bookings.
+TicketFast is a full-stack ticketing application for browsing live events, checking ticket availability, and creating and managing bookings.
 
-The project is designed to support a React frontend and uses JWT authentication for customer actions such as creating bookings.
+It uses a Django REST Framework backend, a React + Vite frontend, JWT authentication, PostgreSQL, and separate cloud deployments for the API and user interface.
 
-## Features
+## Live deployment
 
-- Public event listing and detail endpoints
-- Event search, ordering, city filtering, and venue filtering
-- Ticket types with availability and per-booking limits
-- Authenticated booking creation
-- Booking retrieval and cancellation
-- Transactional booking service to reduce the risk of overselling
-- JWT authentication
-- CORS configuration for local React development
-- PostgreSQL support
-- Test suite using pytest
+| Service | URL |
+|---|---|
+| React frontend | https://ticketing-frontend.snowdoncoder.workers.dev |
+| Django REST API | https://ticketfast-api-ea43d8acd123.herokuapp.com |
+| API health check | https://ticketfast-api-ea43d8acd123.herokuapp.com/api/health/ |
+| Events API | https://ticketfast-api-ea43d8acd123.herokuapp.com/api/events/ |
 
 ## Tech stack
+
+### Backend
 
 - Python
 - Django
 - Django REST Framework
 - PostgreSQL
-- django-filter
 - Simple JWT
+- django-filter
 - django-cors-headers
+- Gunicorn
+- WhiteNoise
 - pytest
 
-## Project structure
+### Frontend
 
-```text
-accounts/
-    tests/
-    urls.py
+- React
+- Vite
+- JavaScript
+- Shared API request client
+- Centralised API error handling
 
-api/
-    serializers/
-    views/
-    tests/
-    urls.py
+### Infrastructure
 
-config/
-    settings.py
-    urls.py
+- GitHub Actions for backend CI/CD
+- Heroku for Django API hosting and PostgreSQL
+- Cloudflare Workers for React static hosting
+- Environment-based configuration for local and production environments
 
-tickets/
-    models.py
-    services/
-    tests/
-    admin.py
-```
+## Features
 
-## Local setup
+### Events
 
-### Prerequisites
+- Public listing of published, upcoming events
+- Event detail endpoint including ticket types
+- Search across event title, description, venue name, and city
+- Filtering by city and venue
+- Ordering by event start time
+- Ticket availability and maximum-per-booking rules
 
-- Python 3.12+
-- PostgreSQL
-- Node.js, if running the React frontend locally
+### Bookings
 
-### 1. Clone the repository
+- Authenticated booking creation
+- Booking references for customer-friendly retrieval
+- Booking detail and cancellation endpoints
+- Transactional booking service to reduce the risk of overselling
+- Cancelled bookings return tickets to availability
+- Users can only access their own bookings
 
-```bash
-git clone <your-repository-url>
-cd <project-folder>
-```
+### Authentication
 
-### 2. Create and activate a virtual environment
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure environment variables
-
-Copy `.env.example` to `.env`:
-
-```bash
-copy .env.example .env
-```
-
-Then update the values for your local PostgreSQL database.
-
-### 5. Apply migrations
-
-```bash
-python manage.py migrate
-```
-
-### 6. Load demo data
-
-```bash
-python manage.py seed_demo_data
-```
-
-This creates public demo venues, upcoming events, and ticket types.
-
-The command is idempotent, so it can safely be run more than once.
-
-### 7. Create a superuser
-
-```bash
-python manage.py createsuperuser
-```
-
-### 8. Run the development server
-
-```bash
-python manage.py runserver
-```
-
-The API will be available at:
-
-```text
-http://127.0.0.1:8000
-```
-
-## Environment variables
-
-| Variable | Purpose | Example |
-|---|---|---|
-| `DJANGO_SECRET_KEY` | Django secret key | A long random string |
-| `DEBUG` | Enables Django debug mode | `True` locally, `False` in production |
-| `DB_NAME` | PostgreSQL database name | `ticketing` |
-| `DB_USER` | PostgreSQL user | `postgres` |
-| `DB_PASSWORD` | PostgreSQL password | Local database password |
-| `DB_HOST` | PostgreSQL host | `localhost` |
-| `DB_PORT` | PostgreSQL port | `5432` |
-| `DJANGO_ALLOWED_HOSTS` | Comma-separated allowed hosts | `localhost,127.0.0.1` |
-| `CORS_ALLOWED_ORIGINS` | Comma-separated allowed frontend origins | `http://localhost:5173` |
-
-Never commit the real `.env` file.
-
-## Running tests
-
-```bash
-pytest
-```
-
-Run a specific test file:
-
-```bash
-pytest api/tests/test_booking_api.py
-```
+- User registration
+- JWT access and refresh tokens
+- Token refresh endpoint
+- Authenticated current-user endpoint
+- Protected booking endpoints
 
 ## API overview
 
-### Public events
+All API routes are namespaced under `/api/`.
+
+### Health
 
 ```http
-GET /tickets/events/
+GET /api/health/
+```
+
+Returns a simple health response.
+
+### Events
+
+```http
+GET /api/events/
 ```
 
 Returns published, upcoming events.
@@ -166,21 +95,33 @@ Supported query parameters:
 
 | Parameter | Example | Description |
 |---|---|---|
-| `search` | `?search=wolverhampton` | Searches event title, description, venue name, and venue city |
-| `ordering` | `?ordering=starts_at` | Orders results ascending |
-| `ordering` | `?ordering=-starts_at` | Orders results descending |
-| `city` | `?city=Wolverhampton` | Filters by venue city |
-| `venue` | `?venue=kks-steel-mill` | Filters by venue slug |
-
-### Event detail
+| `search` | `?search=manchester` | Searches event title, description, venue name, and venue city |
+| `city` | `?city=Manchester` | Filters events by venue city |
+| `venue` | `?venue=manchester-academy` | Filters events by venue slug |
+| `ordering` | `?ordering=starts_at` | Orders events by start time |
+| `ordering` | `?ordering=-starts_at` | Orders events by newest start time first |
 
 ```http
-GET /tickets/events/<id>/
+GET /api/events/<id>/
 ```
 
-Returns a single published event, including its ticket types.
+Returns a single event, including its available ticket types.
 
 ### Authentication
+
+```http
+POST /api/auth/register/
+```
+
+Request:
+
+```json
+{
+  "username": "demo_user",
+  "email": "demo@example.com",
+  "password": "StrongPassword123!"
+}
+```
 
 ```http
 POST /api/auth/token/
@@ -190,8 +131,8 @@ Request:
 
 ```json
 {
-  "username": "example_user",
-  "password": "example_password"
+  "username": "demo_user",
+  "password": "StrongPassword123!"
 }
 ```
 
@@ -204,19 +145,43 @@ Response:
 }
 ```
 
-Use the access token in protected requests:
+Use the access token for protected requests:
 
 ```http
 Authorization: Bearer <access-token>
 ```
 
-### Create booking
+```http
+POST /api/auth/token/refresh/
+```
+
+Request:
+
+```json
+{
+  "refresh": "<refresh-token>"
+}
+```
+
+```http
+GET /api/auth/me/
+```
+
+Returns the authenticated user.
+
+### Bookings
+
+All booking endpoints require a JWT access token.
+
+```http
+GET /api/bookings/
+```
+
+Returns bookings belonging to the authenticated user.
 
 ```http
 POST /api/bookings/
 ```
-
-Requires authentication.
 
 Request:
 
@@ -227,62 +192,208 @@ Request:
 }
 ```
 
-Success response:
+The API validates that:
 
-```text
-201 Created
-```
-
-Validation and availability errors return:
-
-```text
-400 Bad Request
-```
-
-### List bookings
-
-```http
-GET /api/bookings/
-```
-
-Returns bookings belonging to the authenticated user.
-
-### Booking detail
+- The ticket type exists.
+- The quantity is at least 1.
+- The quantity does not exceed `max_per_booking`.
+- Enough tickets remain available.
+- The booking is created transactionally.
 
 ```http
 GET /api/bookings/<reference>/
 ```
 
-### Cancel booking
+Returns a single booking using its unique reference.
 
 ```http
 POST /api/bookings/<reference>/cancel/
 ```
 
+Cancels the authenticated user’s booking and returns its tickets to availability.
+
 ## Business rules
 
 - Only published, upcoming events are publicly listed.
-- Booking quantity must be at least 1.
-- A booking cannot exceed the ticket type’s `max_per_booking`.
+- A booking must contain at least one ticket.
+- A booking cannot exceed the ticket type’s `max_per_booking` value.
 - A booking cannot exceed remaining ticket availability.
-- Bookings are created through a transactional service.
-- Cancelling a pending booking returns its tickets to availability.
+- Bookings are created through a transactional service to reduce overselling risk.
+- Cancelling a booking returns its tickets to availability.
 - Users can only view and cancel their own bookings.
 
-## Deployment notes
+## Project structure
 
-The project is configured to read sensitive settings from environment variables.
+```text
+accounts/
+    User model and authentication-related logic
 
-For a future Heroku deployment:
+api/
+    API serializers, views, and URL routing
 
-- Set `DEBUG=False`
-- Set a strong `DJANGO_SECRET_KEY`
-- Set `DJANGO_ALLOWED_HOSTS` to the Heroku domain
-- Set `CORS_ALLOWED_ORIGINS` to the deployed React domain
-- Provide PostgreSQL connection settings through environment variables
-- Run migrations during deployment
-- Run `python manage.py collectstatic` if serving Django Admin
+config/
+    Django project settings and root URL configuration
+
+tickets/
+    Venue, Event, TicketType, Booking, and BookingItem models
+    Booking service logic
+    Demo data management command
+    Tests
+
+ticketing-frontend/
+    React + Vite frontend
+```
+
+## Local development
+
+### Prerequisites
+
+- Python 3.12+
+- PostgreSQL
+- Node.js
+
+### Backend setup
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+python manage.py migrate
+python manage.py seed_demo_data
+python manage.py runserver
+```
+
+The local API is available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+### Frontend setup
+
+```bash
+cd ticketing-frontend
+npm install
+npm run dev
+```
+
+The frontend runs at:
+
+```text
+http://localhost:5173
+```
+
+Create a `.env` file inside `ticketing-frontend`:
+
+```env
+VITE_API_BASE_URL=http://127.0.0.1:8000
+```
+
+## Environment variables
+
+### Backend
+
+| Variable | Purpose |
+|---|---|
+| `DJANGO_SECRET_KEY` | Django secret key |
+| `DEBUG` | Enables Django debug mode |
+| `DJANGO_ALLOWED_HOSTS` | Comma-separated list of permitted hosts |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated list of permitted frontend origins |
+| `DATABASE_URL` | Heroku PostgreSQL connection URL |
+| `DB_NAME` | Local PostgreSQL database name |
+| `DB_USER` | Local PostgreSQL user |
+| `DB_PASSWORD` | Local PostgreSQL password |
+| `DB_HOST` | Local PostgreSQL host |
+| `DB_PORT` | Local PostgreSQL port |
+
+The backend uses `DATABASE_URL` when it is present, such as on Heroku. Otherwise, it falls back to the individual `DB_*` variables for local PostgreSQL development.
+
+### Frontend
+
+| Variable | Purpose |
+|---|---|
+| `VITE_API_BASE_URL` | Base URL of the Django API |
+
+## Testing
+
+Run the backend test suite:
+
+```bash
+pytest
+```
+
+Run a specific test file:
+
+```bash
+pytest api/tests/test_booking_api.py
+```
+
+## Deployment
+
+### Backend
+
+The Django API is deployed to Heroku through GitHub Actions.
+
+On every relevant push to `main`, GitHub Actions:
+
+1. Installs Python dependencies.
+2. Runs Django system checks.
+3. Pushes the repository to Heroku.
+4. Heroku applies database migrations through the release process.
+5. Heroku starts the API using Gunicorn.
+
+The `Procfile` contains:
+
+```text
+release: python manage.py migrate
+web: gunicorn config.wsgi --log-file -
+```
+
+### Frontend
+
+The React frontend is deployed to Cloudflare Workers.
+
+Cloudflare:
+
+1. Connects to the GitHub repository.
+2. Changes into `ticketing-frontend`.
+3. Installs npm dependencies.
+4. Runs `npm run build`.
+5. Publishes the generated `dist` directory.
+
+The frontend is configured with:
+
+```env
+VITE_API_BASE_URL=[https://ticketfast-api-ea43d8acd123.herokuapp.com](https://ticketfast-api-ea43d8acd123.herokuapp.com)
+```
+
+## Demo data
+
+To create demo venues, events, and ticket types:
+
+```bash
+python manage.py seed_demo_data
+```
+
+On Heroku:
+
+```bash
+heroku run python manage.py seed_demo_data -a ticketfast-api-ea43d8acd123
+```
+
+The command is idempotent, so it can safely be run more than once.
+
+## Postman
+
+A Postman collection is available for testing the deployed API:
+
+```text
+ticketfast-live.postman_collection.json
+```
+
+Import it into Postman, set the `username` and `password` collection variables, then run **Auth → Login** before testing protected booking endpoints.
 
 ## License
 
-This project is for assessment and development purposes.
+This project was created for assessment and development purposes.
