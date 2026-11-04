@@ -50,7 +50,7 @@ export default function Header() {
 
         <nav className="site-nav">
           <NavLink
-            to="/"
+            to="/Events"
             className={({ isActive }) =>
               isActive ? "nav-link active" : "nav-link"
             }

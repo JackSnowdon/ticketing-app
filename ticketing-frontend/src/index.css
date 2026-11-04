@@ -45,6 +45,73 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Home Page styles */
+
+.home-hero {
+  padding: 5rem 1.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #7e899b, #464374);
+  color: white;
+  margin-bottom: 3rem;
+}
+
+.home-hero-content {
+  max-width: 42rem;
+}
+
+.home-eyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 0.75rem;
+}
+
+.home-hero h1 {
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.home-lede {
+  font-size: 1.125rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.home-featured {
+  margin-bottom: 3rem;
+}
+
+.home-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.home-section-header h2 {
+  font-size: 1.75rem;
+}
+
+.home-view-all {
+  color: #4338ca;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.home-view-all:hover {
+  text-decoration: underline;
+}
+
 /* Event list and card styles */
 
 .event-list {

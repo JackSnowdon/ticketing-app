@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client";
+import { isLoggedIn } from "../api/auth";
 import { getErrorMessage } from "../api/errors";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
 
+  const alreadyLoggedIn = isLoggedIn();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -16,6 +18,16 @@ export default function RegisterPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!alreadyLoggedIn) return;
+
+    const timer = setTimeout(() => {
+      navigate("/", { replace: true });
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [alreadyLoggedIn, navigate]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -63,6 +75,18 @@ export default function RegisterPage() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (alreadyLoggedIn) {
+    return (
+      <main>
+        <h1>Create account</h1>
+
+        <p className="form-error">You are already logged in.</p>
+
+        <p>Redirecting you to the home page…</p>
+      </main>
+    );
   }
 
   return (

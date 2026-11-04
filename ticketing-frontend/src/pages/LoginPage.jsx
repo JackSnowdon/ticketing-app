@@ -1,17 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client";
-import { saveTokens, saveUsername } from "../api/auth";
+import { isLoggedIn, saveTokens, saveUsername } from "../api/auth";
 import { getErrorMessage } from "../api/errors";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const alreadyLoggedIn = isLoggedIn();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!alreadyLoggedIn) return;
+
+    const timer = setTimeout(() => {
+      navigate("/", { replace: true });
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [alreadyLoggedIn, navigate]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -47,12 +58,24 @@ export default function LoginPage() {
     }
   }
 
+  if (alreadyLoggedIn) {
+    return (
+      <main>
+        <h1>Log in</h1>
+
+        <p className="form-error">You are already logged in.</p>
+
+        <p>Redirecting you to the home page…</p>
+      </main>
+    );
+  }
+
   return (
     <main>
       <h1>Log in</h1>
       {location.state?.message && (
         <p className="form-error">{location.state.message}</p>
-    )}
+      )}
 
       <form className="form" onSubmit={handleSubmit}>
         <div className="form-field">

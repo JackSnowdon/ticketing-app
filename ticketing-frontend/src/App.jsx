@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
+import HomePage from "./pages/HomePage";
 import EventsPage from "./pages/EventsPage";
 import EventDetailPage from "./pages/EventDetailPage";
 import BookingPage from "./pages/BookingPage";
@@ -15,7 +16,8 @@ function App() {
       <Header />
 
       <Routes>
-        <Route path="/" element={<EventsPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/events" element={<EventsPage />} />
         <Route path="/events/:id" element={<EventDetailPage />} />
         <Route
           path="/events/:id/book"
