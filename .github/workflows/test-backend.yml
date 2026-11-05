@@ -1,0 +1,72 @@
+name: Backend tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "accounts/**"
+      - "api/**"
+      - "tickets/**"
+      - "config/**"
+      - "manage.py"
+      - "pytest.ini"
+      - "requirements.txt"
+      - ".github/workflows/test-backend.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "accounts/**"
+      - "api/**"
+      - "tickets/**"
+      - "config/**"
+      - "manage.py"
+      - "pytest.ini"
+      - "requirements.txt"
+      - ".github/workflows/test-backend.yml"
+
+  workflow_dispatch:
+
+concurrency:
+  group: backend-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Django system checks
+        env:
+          DJANGO_SECRET_KEY: github-actions-test-key
+          DEBUG: False
+          DATABASE_URL: sqlite:///github-actions.sqlite3
+        run: python manage.py check
+
+      - name: Run migrations
+        env:
+          DJANGO_SECRET_KEY: github-actions-test-key
+          DEBUG: False
+          DATABASE_URL: sqlite:///github-actions.sqlite3
+        run: python manage.py migrate
+
+      - name: Run pytest
+        env:
+          DJANGO_SECRET_KEY: github-actions-test-key
+          DEBUG: False
+          DATABASE_URL: sqlite:///github-actions.sqlite3
+        run: pytest -q
