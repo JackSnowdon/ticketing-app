@@ -93,11 +93,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Heroku provides DATABASE_URL. Locally, use the existing DB_* variables.
 
 
-if config("DATABASE_URL", default=None):
+database_url = config("DATABASE_URL", default=None)
+
+if database_url:
+    database_options = {}
+
+    # If the database URL starts with "postgres", 
+    # we need to set SSL requirement for secure connections.
+
+    if database_url.startswith("postgres"):
+        database_options["ssl_require"] = True
+
     DATABASES = {
         "default": dj_database_url.config(
+            default=database_url,
             conn_max_age=600,
-            ssl_require=True,
+            **database_options,
         )
     }
 else:
