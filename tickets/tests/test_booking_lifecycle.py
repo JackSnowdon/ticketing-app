@@ -99,3 +99,44 @@ class BookingLifecycleServiceTests(TestCase):
                 user=self.user,
                 reference=booking.reference,
             )
+
+    def test_cannot_cancel_confirmed_booking(self):
+        booking = create_booking(
+            user=self.user,
+            ticket_type_id=self.standard.id,
+            quantity=2,
+        )
+
+        booking.status = Booking.Status.CONFIRMED
+        booking.save(update_fields=["status"])
+
+        with self.assertRaises(TicketingError):
+            cancel_booking(
+                user=self.user,
+                reference=booking.reference,
+            )
+
+        self.standard.refresh_from_db()
+        self.assertEqual(self.standard.quantity_available, 8)
+
+
+    def test_cancelled_booking_availability_is_not_restored_twice(self):
+        booking = create_booking(
+            user=self.user,
+            ticket_type_id=self.standard.id,
+            quantity=2,
+        )
+
+        cancel_booking(
+            user=self.user,
+            reference=booking.reference,
+        )
+
+        with self.assertRaises(TicketingError):
+            cancel_booking(
+                user=self.user,
+                reference=booking.reference,
+            )
+
+        self.standard.refresh_from_db()
+        self.assertEqual(self.standard.quantity_available, 10)
