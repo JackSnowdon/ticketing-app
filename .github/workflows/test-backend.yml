@@ -37,6 +37,21 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ticketfast
+          POSTGRES_PASSWORD: ticketfast
+          POSTGRES_DB: ticketfast_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ticketfast"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -54,19 +69,22 @@ jobs:
         env:
           DJANGO_SECRET_KEY: github-actions-test-key
           DEBUG: False
-          DATABASE_URL: sqlite:///github-actions.sqlite3
+          DATABASE_URL: postgres://ticketfast:ticketfast@localhost:5432/ticketfast_test
+          DJANGO_DB_SSL_REQUIRE: False
         run: python manage.py check
 
       - name: Run migrations
         env:
           DJANGO_SECRET_KEY: github-actions-test-key
           DEBUG: False
-          DATABASE_URL: sqlite:///github-actions.sqlite3
+          DATABASE_URL: postgres://ticketfast:ticketfast@localhost:5432/ticketfast_test
+          DJANGO_DB_SSL_REQUIRE: False
         run: python manage.py migrate
 
       - name: Run pytest
         env:
           DJANGO_SECRET_KEY: github-actions-test-key
           DEBUG: False
-          DATABASE_URL: sqlite:///github-actions.sqlite3
+          DATABASE_URL: postgres://ticketfast:ticketfast@localhost:5432/ticketfast_test
+          DJANGO_DB_SSL_REQUIRE: False
         run: pytest -q
